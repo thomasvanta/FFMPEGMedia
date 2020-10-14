@@ -58,6 +58,7 @@ public class FFMPEGMedia : ModuleRules
 			PublicAdditionalLibraries.Add(Path.Combine(LibrariesPath, "avutil.lib"));
 			PublicAdditionalLibraries.Add(Path.Combine(LibrariesPath, "swresample.lib"));
 			PublicAdditionalLibraries.Add(Path.Combine(LibrariesPath, "swscale.lib"));
+			PublicAdditionalLibraries.Add(Path.Combine(LibrariesPath, "postproc.lib"));
 
 			string[] dlls = {"avcodec-58.dll","avdevice-58.dll", "avfilter-7.dll", "avformat-58.dll", "avutil-56.dll", "swresample-3.dll", "swscale-5.dll", "postproc-55.dll"};
 
@@ -108,8 +109,8 @@ public class FFMPEGMedia : ModuleRules
                     
           string finalPath =  Path.Combine(ModulePath, "FFMPEGMedia_APL.xml");
           System.Console.WriteLine("... APL Path -> " + finalPath);
-          AdditionalPropertiesForReceipt.Add(new ReceiptProperty("AndroidPlugin", finalPath));
-        }
+			AdditionalPropertiesForReceipt.Add("AndroidPlugin", finalPath);
+		}
 
 		if (isLibrarySupported)
 		{
