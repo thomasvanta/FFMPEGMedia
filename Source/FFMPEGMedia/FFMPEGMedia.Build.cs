@@ -21,23 +21,21 @@ public class FFMPEGMedia : ModuleRules
 		get { return Directory.GetParent(ModulePath).Parent.FullName; }
 	}
 
+        string filename = Path.GetFileName(Filepath);
 
 	private void CopyToBinaries(string Filepath, ReadOnlyTargetRules Target)
 	{
-		string binariesDir = Path.Combine(UProjectPath, "Binaries", Target.Platform.ToString());
-		string filename = Path.GetFileName(Filepath);
+        System.Console.WriteLine("Writing file " + Filepath + " to " + binariesDir);
 
-		System.Console.WriteLine("Writing file " + Filepath + " to " + binariesDir);
+        if (!Directory.Exists(binariesDir))
+            Directory.CreateDirectory(binariesDir);
 
-		if (!Directory.Exists(binariesDir))
-			Directory.CreateDirectory(binariesDir);
+        if (!File.Exists(Path.Combine(binariesDir, filename)))
+            File.Copy(Filepath, Path.Combine(binariesDir, filename), true);
+    }
+	*/
 
-		if (!File.Exists(Path.Combine(binariesDir, filename)))
-			File.Copy(Filepath, Path.Combine(binariesDir, filename), true);
-	}
-
-
-	public bool LoadFFmpeg(ReadOnlyTargetRules Target)
+    public bool LoadFFmpeg(ReadOnlyTargetRules Target)
 	{
 		bool isLibrarySupported = false;
 
@@ -63,11 +61,14 @@ public class FFMPEGMedia : ModuleRules
 			string[] dlls = {"avcodec-58.dll","avdevice-58.dll", "avfilter-7.dll", "avformat-58.dll", "avutil-56.dll", "swresample-3.dll", "swscale-5.dll", "postproc-55.dll"};
 
 			string BinariesPath = Path.Combine(Path.Combine(Path.Combine(ThirdPartyPath, "ffmpeg", "bin"), "vs"), PlatformString);
+			System.Console.WriteLine("... BinariesPath -> " + BinariesPath);
 			foreach (string dll in dlls)
 			{
+				/*  //New Version FFMPEG DLLs not support Delay-Load
 				PublicDelayLoadDLLs.Add(dll);
-				//CopyToBinaries(Path.Combine(BinariesPath, dll), Target);
-				RuntimeDependencies.Add(Path.Combine(BinariesPath, dll), StagedFileType.NonUFS);
+				RuntimeDependencies.Add(Path.Combine(BinariesPath, dll), StagedFileType.NonUFS);	
+				*/
+				RuntimeDependencies.Add("$(BinaryOutputDir)/" + dll, Path.Combine(BinariesPath, dll));
 			}
 
 		}
